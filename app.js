@@ -1,10 +1,20 @@
 // Requires
 var express = require('express');
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 
 // Initialize variables
 var app = express();
+
+// Body parser configuration
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application json
+app.use(bodyParser.json());
+
+
 
 //Importar rutas
 var appRoutes = require('./routes/app');
