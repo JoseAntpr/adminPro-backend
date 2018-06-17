@@ -4,8 +4,6 @@ var bcrypt = require('bcryptjs');
 var app = express();
 
 var User =  require('../models/user');
-
-
 /* 
 ===========================================
 Get all users
@@ -35,6 +33,56 @@ app.get('/', (req, res, next) => {
 
 /* 
 ===========================================
+update an  user
+===========================================
+*/
+
+app.put('/:id', (req, res) => {
+
+    var id = req.params.id;
+    var body = req.body;
+
+    User.findById( id, ( err, user ) => {
+        if(err){
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error finding the user',
+                errors: err
+            });
+        }
+
+        if( !user ){
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'User with id' + id + 'not found',
+                errors: err
+            });
+        }
+
+        user.name = body.name;
+        user.email = body.email;
+        user.role = body.role;
+
+        user.save( (err, savedUser) => {
+            if( err ){
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'Error updating user',
+                    errors: err
+                });
+            }
+            savedUser.password = ':|';
+            res.status(200).json({
+                ok: true,
+                user: savedUser
+            })
+        });
+    });
+
+});
+
+/* 
+===========================================
 Create a new user
 ===========================================
 */
@@ -57,15 +105,51 @@ app.post('/', (req, res) => {
                 ok: false,
                 mensaje: 'Error creating user',
                 errors: err
-            })
+            });
         }
 
         res.status(201).json({
             ok: true,
             user: savedUser
-        })
+        });
     });
 
 });
+
+
+/* 
+===========================================
+Delete user
+===========================================
+*/
+app.delete('/:id', (req, res) => {
+    var id = req.params.id;
+
+    User.findByIdAndRemove(id, (err, deletedUser)=> {
+        if(err){
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error deleting user',
+                errors: err
+            });
+        }
+
+        if( !deletedUser ){
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'User with ' + id + 'not exists',
+                errors: {
+                    message: 'User with this id not exists'
+                }
+            })
+        }
+
+        res.status(200).json({
+            ok: true,
+            usuario: deletedUser
+        });
+    });
+});
+
 
 module.exports = app;
