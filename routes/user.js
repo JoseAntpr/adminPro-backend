@@ -1,5 +1,8 @@
 var express = require('express');
 var bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+
+var SEED = require('../config/config').SEED;
 
 var app = express();
 
@@ -30,6 +33,34 @@ app.get('/', (req, res, next) => {
 
     });
 });
+
+/* 
+===========================================
+Token verify
+===========================================
+*/
+
+app.use('/', (req, res, next) => {
+
+    var token = req.query.token;
+
+    jwt.verify( token, SEED, ( err, decoded) => {
+
+        if( err ) {
+            return res.status(401).json({
+                ok: false,
+                mensaje: 'Unathorized token',
+                errors: err
+            });
+        }
+
+        next();
+
+    });
+
+
+});
+
 
 /* 
 ===========================================
