@@ -13,7 +13,13 @@ Get all users
 */
 app.get('/', (req, res, next) => {
 
-    User.find({}, 'name email img rol').exec(
+    var nextPage = req.query.next || 0;
+    nextPage = Number(nextPage);
+
+    User.find({}, 'name email img rol')
+    .skip(nextPage)
+    .limit(5)
+    .exec(
         
         (err, users) => {
         if( err ) {
@@ -24,10 +30,16 @@ app.get('/', (req, res, next) => {
             })
         }
 
-        res.status(200).json({
-            ok: true,
-            users: users
+        User.count({}, (err, count) => {
+            res.status(200).json({
+                ok: true,
+                users: users,
+                total: count
+            });
+
         });
+
+        
 
 
     });

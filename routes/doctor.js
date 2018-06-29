@@ -14,7 +14,12 @@ Get all doctors
 
 app.get('/', (req, res, next) => {
 
+    var nextPage = req.query.next || 0;
+    nextPage = Number(nextPage);
+
     Doctor.find({})
+    .skip(nextPage)
+    .limit(5)
     .populate('user', 'name email')
     .populate('hospital')
     .exec(
@@ -28,10 +33,17 @@ app.get('/', (req, res, next) => {
             })
         }
 
-        res.status(200).json({
-            ok: true,
-            doctors: doctors
+        Doctor.count({}, (err, count) => {
+
+            res.status(200).json({
+                ok: true,
+                doctors: doctors,
+                total: count
+            });
+
         });
+
+        
 
 
     });

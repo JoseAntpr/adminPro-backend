@@ -13,8 +13,14 @@ Get all hospitals
 */
 
 app.get('/', (req, res, next) => {
+    
+    var nextPage = req.query.next || 0;
+    nextPage = Number(nextPage);
+
 
     Hospital.find({})
+    .skip(nextPage)
+    .limit(5)
     .populate('user', 'name email')
     .exec(
         (err, hospitals) => {
@@ -26,10 +32,17 @@ app.get('/', (req, res, next) => {
                 })
             };
 
-            res.status(200).json({
-                ok: true,
-                hospitals: hospitals
+            Hospital.count({}, (err, count) => {
+
+                res.status(200).json({
+                    ok: true,
+                    hospitals: hospitals,
+                    total: count
+                });
+
             });
+
+            
         }
 
     );
