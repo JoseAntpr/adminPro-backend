@@ -14,7 +14,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application json
 app.use(bodyParser.json());
 
-
+// Server index config
+// var serveIndex = require('serve-index');
+// app.use(express.static(__dirname + '/'));
+// app.use('/uploads', serveIndex(__dirname + '/uploads'))
 
 //Importar rutas
 var appRoutes = require('./routes/app');
@@ -24,6 +27,7 @@ var hospitalRoutes = require('./routes/hospital');
 var doctorRoutes = require('./routes/doctor');
 var searchRoutes = require('./routes/search');
 var uploadRoutes = require('./routes/upload');
+var imagesRoutes = require('./routes/images');
 
 // Conection with db
 mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', (err, res) => {
@@ -39,6 +43,7 @@ app.use('/hospital', hospitalRoutes);
 app.use('/doctor', doctorRoutes);
 app.use('/search', searchRoutes);
 app.use('/upload', uploadRoutes);
+app.use('/images', imagesRoutes);
 
 app.use('/', appRoutes);
 
