@@ -33,7 +33,7 @@ async function verify(token) {
     //const domain = payload['hd'];
 
     return {
-        nombre: payload.name,
+        name: payload.name,
         email: payload.email,
         img: payload.picture,
         google: true,
@@ -45,17 +45,68 @@ app.post('/google', async (req, res) => {
     var token = req.body.token;
     var googleUser = await verify( token )
         .catch( e => {
-            return res.status(200).json({
+            return res.status(401).json({
                 ok: false,
                 mensaje: 'Invalid token'
             });
         });
 
-    res.status(200).json({
+    User.findOne( { email: googleUser.email }, (err, usuarioDB) => {
+
+        if( err ) {
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error finding this user',
+                errors: err
+            });
+        }
+
+        if( usuarioDB ) {
+
+            if (usuarioDB.google === false) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'Must be use your email and password authentication',
+                });
+            } else { 
+                var token = jwt.sign({ user: usuarioDB}, SEED , {expiresIn: 14400}); // 4horas
+
+                res.status(200).json({
+                    ok: true,
+                    user: usuarioDB,
+                    id: usuarioDB._id,
+                    token: token
+                });
+            }
+        }else {
+            // User not exist then ... create it
+            var user = new User();
+
+            user.name = googleUser.name;
+            user.email = googleUser.email;
+            user.img = googleUser.img;
+            user.google = true;
+            user.password = ':)';
+
+            user.save(( err, usuarioDB) => {
+                var token = jwt.sign({ user: usuarioDB}, SEED , {expiresIn: 14400}); // 4horas
+
+                res.status(200).json({
+                    ok: true,
+                    user: usuarioDB,
+                    id: usuarioDB._id,
+                    token: token
+                });
+            });
+        }
+
+    });
+
+    /*res.status(200).json({
         ok: true,
         mensaje: 'Ok',
         googleUser: googleUser
-    });
+    });*/ 
 });
 
 /* 
