@@ -101,7 +101,7 @@ Create a new user
 ===========================================
 */
 
-app.post('/', mdAuthentication.tokenVerify ,(req, res) => {
+app.post('/', (req, res) => {
 
     var body = req.body;
 
