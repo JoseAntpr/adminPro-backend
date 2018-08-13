@@ -16,7 +16,7 @@ app.get('/', (req, res, next) => {
     var nextPage = req.query.next || 0;
     nextPage = Number(nextPage);
 
-    User.find({}, 'name email img rol')
+    User.find({}, 'name email img role google')
     .skip(nextPage)
     .limit(5)
     .exec(
