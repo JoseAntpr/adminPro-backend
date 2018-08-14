@@ -80,7 +80,7 @@ app.get('/:id', (req, res) => {
 
         res.status(200).json({
             ok: true,
-            user: doctor
+            doctor: doctor
         })
 
     })
@@ -132,7 +132,7 @@ app.put('/:id', mdAuthentication.tokenVerify ,(req, res) => {
             }
             res.status(200).json({
                 ok: true,
-                user: savedDoctor
+                doctor: savedDoctor
             })
         });
     });
