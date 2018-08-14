@@ -51,7 +51,9 @@ update an  user
 ===========================================
 */
 
-app.put('/:id', [mdAuthentication.tokenVerify, mdAuthentication.tokenAdminVerify] ,(req, res) => {
+app.put('/:id', 
+        [mdAuthentication.tokenVerify, mdAuthentication.tokenAdminSameUserVerify], 
+        (req, res) => {
 
     var id = req.params.id;
     var body = req.body;

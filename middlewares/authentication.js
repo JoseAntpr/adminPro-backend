@@ -52,3 +52,26 @@ exports.tokenAdminVerify = function(req, res, next){
         });
     }
 }
+
+/* 
+===========================================
+Token Admin verify
+===========================================
+*/
+exports.tokenAdminSameUserVerify = function(req, res, next){
+
+    var user = req.user;
+    var id = req.params.id;
+
+    if( user.role === 'ADMIN_ROLE' || user._id === id){
+        next();
+        return;
+    }else {
+
+        return res.status(401).json({
+            ok: false,
+            mensaje: 'Unathorized token',
+            errors: err
+        });
+    }
+}
