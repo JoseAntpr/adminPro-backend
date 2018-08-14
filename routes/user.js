@@ -51,7 +51,7 @@ update an  user
 ===========================================
 */
 
-app.put('/:id', mdAuthentication.tokenVerify ,(req, res) => {
+app.put('/:id', [mdAuthentication.tokenVerify, mdAuthentication.tokenAdminVerify] ,(req, res) => {
 
     var id = req.params.id;
     var body = req.body;
@@ -137,7 +137,7 @@ app.post('/', (req, res) => {
 Delete user
 ===========================================
 */
-app.delete('/:id', mdAuthentication.tokenVerify, (req, res) => {
+app.delete('/:id', [mdAuthentication.tokenVerify, mdAuthentication.tokenAdminVerify] , (req, res) => {
     var id = req.params.id;
 
     User.findByIdAndRemove(id, (err, deletedUser)=> {
