@@ -56,7 +56,7 @@ Get all hospitals
 app.get('/:id', (req, res) => {
     const id = req.params.id;
 
-    Hospital.findById('id')
+    Hospital.findById(id)
         .populate('user', 'name img email')
         .exec((err, hospital) => {
             if(err) {

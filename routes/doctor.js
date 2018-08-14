@@ -51,6 +51,45 @@ app.get('/', (req, res, next) => {
 
 /* 
 ===========================================
+Get doctor
+===========================================
+*/
+
+app.get('/:id', (req, res) => {
+    const id = req.params.id;
+
+    Doctor.findById(id)
+    .populate('user', 'nombre email img')
+    .populate('hospital')
+    .exec( (err, doctor) => {
+        if(err){
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error finding the doctor',
+                errors: err
+            });
+        }
+
+        if( !doctor ){
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'Doctor with id' + id + 'not found',
+                errors: err
+            });
+        }
+
+        res.status(200).json({
+            ok: true,
+            user: doctor
+        })
+
+    })
+
+
+});
+
+/* 
+===========================================
 update a doctor
 ===========================================
 */
