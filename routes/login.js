@@ -22,7 +22,7 @@ Autenticacion google
 */
 app.get('/updateToken',mdAutenthication.tokenVerify ,(req, res) => {
 
-    var Token = jwt.sign({ user: req.user}, SEED , {expiresIn: 14400});
+    var token = jwt.sign({ user: req.user}, SEED , {expiresIn: 14400});
 
 
     res.status(200).json({
